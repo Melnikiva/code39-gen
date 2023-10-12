@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0" />
+    <title>Code39 Generator</title>
+    <link
+      rel="stylesheet"
+      href="styles.css" />
+    <link
+      rel="icon"
+      href="https://www.svgrepo.com//show/101772/barcode.svg"
+      type="image/x-icon" />
+  </head>
+  <body>
+    <div class="flex-center-row window-height">
+      <div class="flex-center-column">
+        <div class="flex-center-row">
+          <h1>Code39 generator</h1>
+        </div>
+        <div class="bordered-container flex-center-column">
+          <canvas id="canvas"> </canvas>
+        </div>
+        <div class="input-container flex-center-column full-width">
+          <input
+            id="input"
+            placeholder="Input text (10 characters max)"
+            maxlength="10"
+            type="text" />
+          <button id="submit">Generate</button>
+        </div>
+        <div class="code-container flex-center-column">
+          <div>Binary representation</div>
+          <div class="code-box full-width"></div>
+        </div>
+      </div>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>
