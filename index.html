@@ -15,7 +15,8 @@
       type="image/x-icon" />
   </head>
   <body>
-    <div class="flex-center-row window-height">
+    <script src="https://d10ka0m22z5ju5.cloudfront.net/js/scanthng/4.14.0/scanthng-4.14.0.js"></script>
+    <div class="flex-center-row">
       <div class="flex-center-column">
         <div class="flex-center-row">
           <h1>Code39 generator</h1>
@@ -34,6 +35,19 @@
         <div class="code-container flex-center-column">
           <div>Binary representation</div>
           <div class="code-box full-width"></div>
+        </div>
+        <button
+          id="scan"
+          style="margin-top: 24px; padding: 12px">
+          Scan code
+        </button>
+        <div>
+          <video
+            id="video"
+            width="50%"
+            height="50%"
+            autoplay
+            style="position: absolute; top: 25%; left: 25%"></video>
         </div>
       </div>
     </div>

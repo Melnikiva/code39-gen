@@ -47,8 +47,9 @@ function generateCode39(input) {
     " ": "011000100",
   };
 
+  const startingSymbol = "010010100";
+
   function textToCode39(text) {
-    const startingSymbol = "010010100";
     let result = startingSymbol + "0";
     text = text.toUpperCase();
 
@@ -121,3 +122,66 @@ function submitCode() {
 document.querySelector("#submit").addEventListener("click", submitCode);
 
 drawCode39("12345");
+
+function scanCode(event) {
+  const targetImage = event.target.files[0];
+  var image = document.getElementById("output");
+  image.src = URL.createObjectURL(targetImage);
+}
+
+var mediaStream = null;
+
+function createVideoStream() {
+  const video = document.querySelector("#video");
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    const constraints = {
+      video: true,
+      audio: false,
+    };
+    navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
+      mediaStream = stream;
+      mediaStream.stop = function () {
+        this.getAudioTracks().forEach(function (track) {
+          track.stop();
+        });
+        this.getVideoTracks().forEach(function (track) {
+          //in case... :)
+          track.stop();
+        });
+      };
+      return (video.srcObject = stream);
+    });
+  }
+}
+
+function stopStream() {
+  mediaStream.stop();
+  document.querySelector("#video").style.display = "none";
+}
+
+const barcodeDetector = new BarcodeDetector({ formats: ["code_39"] });
+
+const detectCode = () => {
+  barcodeDetector
+    .detect(video)
+    .then((codes) => {
+      if (codes.length === 0) return;
+      for (const barcode of codes) {
+        console.log(barcode);
+        stopStream();
+        document.querySelector("#input").value = barcode.rawValue;
+        drawCode39(barcode.rawValue);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+setInterval(detectCode, 400);
+
+function startStream() {
+  document.querySelector("#video").style.display = "block";
+  createVideoStream();
+}
+
+document.querySelector("#scan").addEventListener("click", startStream);
