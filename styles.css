@@ -72,3 +72,8 @@ input {
   width: fit-content;
   border-radius: 4px;
 }
+
+#storage-table td {
+  border: 1px solid;
+  padding: 12px;
+}

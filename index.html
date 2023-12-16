@@ -16,46 +16,90 @@
   </head>
   <body>
     <script src="https://d10ka0m22z5ju5.cloudfront.net/js/scanthng/4.14.0/scanthng-4.14.0.js"></script>
-    <div class="flex-center-row">
-      <div class="flex-center-column">
+    <table style="width: 100%">
+      <td style="width: 50%">
         <div class="flex-center-row">
-          <h1>Code39 generator</h1>
+          <div class="flex-center-column">
+            <div class="flex-center-row">
+              <h1>Code39 generator</h1>
+            </div>
+            <div class="bordered-container flex-center-column">
+              <canvas id="canvas"> </canvas>
+            </div>
+            <div class="input-container flex-center-column full-width">
+              <input
+                id="input"
+                placeholder="Input text (10 characters max)"
+                maxlength="10"
+                type="text" />
+              <button id="submit">Generate</button>
+            </div>
+            <div class="code-container flex-center-column">
+              <div>Binary representation</div>
+              <div class="code-box full-width"></div>
+            </div>
+            <button
+              id="scan"
+              style="margin-top: 24px; padding: 12px">
+              Scan code
+            </button>
+            <div>
+              <video
+                id="video"
+                width="50%"
+                height="50%"
+                autoplay
+                style="
+                  position: absolute;
+                  top: 25%;
+                  left: 25%;
+                  display: none;
+                "></video>
+            </div>
+          </div>
         </div>
-        <div class="bordered-container flex-center-column">
-          <canvas id="canvas"> </canvas>
+      </td>
+      <td style="width: 50%">
+        <div class="flex-center-row">
+          <div class="flex-center-column">
+            <table id="storage-table">
+              <thead>
+                <tr>
+                  <td><b>ID</b></td>
+                  <td><b>TITLE</b></td>
+                  <td><b>COUNT</b></td>
+                  <td><b>LAST SCANNED</b></td>
+                </tr>
+              </thead>
+              <tbody id="table-body"></tbody>
+            </table>
+            <div style="margin-top: 16px">
+              <input
+                placeholder="Title"
+                type="text"
+                id="new-item-input" />
+              <button
+                id="submit-new-item"
+                style="padding: 8px">
+                Add Item
+              </button>
+            </div>
+
+            <div style="margin-top: 16px">
+              <input
+                placeholder="ID"
+                type="text"
+                id="remove-item-input" />
+              <button
+                id="remove-item"
+                style="padding: 8px">
+                Remove
+              </button>
+            </div>
+          </div>
         </div>
-        <div class="input-container flex-center-column full-width">
-          <input
-            id="input"
-            placeholder="Input text (10 characters max)"
-            maxlength="10"
-            type="text" />
-          <button id="submit">Generate</button>
-        </div>
-        <div class="code-container flex-center-column">
-          <div>Binary representation</div>
-          <div class="code-box full-width"></div>
-        </div>
-        <button
-          id="scan"
-          style="margin-top: 24px; padding: 12px">
-          Scan code
-        </button>
-        <div>
-          <video
-            id="video"
-            width="50%"
-            height="50%"
-            autoplay
-            style="
-              position: absolute;
-              top: 25%;
-              left: 25%;
-              display: none;
-            "></video>
-        </div>
-      </div>
-    </div>
+      </td>
+    </table>
     <script src="main.js"></script>
   </body>
 </html>

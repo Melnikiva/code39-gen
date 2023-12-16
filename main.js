@@ -145,7 +145,6 @@ function createVideoStream() {
           track.stop();
         });
         this.getVideoTracks().forEach(function (track) {
-          //in case... :)
           track.stop();
         });
       };
@@ -171,6 +170,10 @@ const detectCode = () => {
         stopStream();
         document.querySelector("#input").value = barcode.rawValue;
         drawCode39(barcode.rawValue);
+
+        const item = getStorageItemById(barcode.rawValue);
+        item.count += 1;
+        updateStorageItem(item);
       }
     })
     .catch((err) => {
@@ -185,3 +188,148 @@ function startStream() {
 }
 
 document.querySelector("#scan").addEventListener("click", startStream);
+
+const initialArray = [
+  {
+    id: "542637",
+    title: "Bread",
+    lastScanned: `${formatDate(new Date(2023, 11, 15, 14, 32, 20))}`,
+    count: 7,
+  },
+  {
+    id: "395376",
+    title: "Apple",
+    lastScanned: `${formatDate(new Date(2023, 11, 16, 15, 28, 12))}`,
+    count: 18,
+  },
+  {
+    id: "827635",
+    title: "Pizza",
+    lastScanned: `${formatDate(new Date(2023, 11, 16, 14, 12, 15))}`,
+    count: 1,
+  },
+];
+
+function setStorageArray(arr) {
+  return localStorage.setItem("storage", JSON.stringify(arr));
+}
+
+function getStorageArray() {
+  return JSON.parse(localStorage.getItem("storage"));
+}
+
+function getStorageItemById(id) {
+  const arr = getStorageArray();
+  const item = arr.find((item) => item.id === id);
+  return item;
+}
+
+function updateStorageItem(itemToUpdate) {
+  const arr = getStorageArray();
+  const itemIndex = arr.findIndex((item) => item.id === itemToUpdate.id);
+  const date = formatDate(Date.now());
+  arr[itemIndex] = itemToUpdate;
+  arr[itemIndex].lastScanned = `${date}`;
+  setStorageArray(arr);
+  updateTable();
+}
+
+function removeStorageItem(itemIdToRemove) {
+  const arr = getStorageArray();
+  arr.splice(
+    arr.findIndex((item) => item.id === itemIdToRemove),
+    1
+  );
+  setStorageArray(arr);
+}
+
+function addStorageItem(itemTitle) {
+  const newItem = { title: itemTitle };
+  let newId = Math.round(Math.random() * 1000000 - 1);
+  while (newId % 10 === 0) {
+    newId = Math.round(Math.random() * 1000000 - 1);
+  }
+
+  newItem.id = newId;
+  newItem.lastScanned = formatDate(Date.now());
+  newItem.count = 0;
+  const arr = getStorageArray();
+  arr.push(newItem);
+  setStorageArray(arr);
+}
+
+if (!getStorageArray()) setStorageArray(initialArray);
+updateTable();
+
+function updateTable() {
+  const tableBody = document.getElementById("table-body");
+  tableBody.innerHTML = "";
+
+  const storage = getStorageArray();
+
+  for (let i = 0; i < storage.length; i++) {
+    const row = document.createElement("tr");
+
+    const cell_1 = document.createElement("td");
+    const id = document.createTextNode(`${storage[i].id}`);
+    cell_1.appendChild(id);
+    row.appendChild(cell_1);
+
+    const cell_2 = document.createElement("td");
+    const title = document.createTextNode(`${storage[i].title}`);
+    cell_2.appendChild(title);
+    row.appendChild(cell_2);
+
+    const cell_3 = document.createElement("td");
+    const count = document.createTextNode(`${storage[i].count}`);
+    cell_3.appendChild(count);
+    row.appendChild(cell_3);
+
+    const cell_4 = document.createElement("td");
+    const lastScanned = document.createTextNode(`${storage[i].lastScanned}`);
+    cell_4.appendChild(lastScanned);
+    row.appendChild(cell_4);
+
+    tableBody.appendChild(row);
+  }
+}
+
+function formatDate(date) {
+  var d = new Date(date);
+  month = "" + (d.getMonth() + 1);
+  day = "" + d.getDate();
+  year = d.getFullYear();
+  hours = d.getHours();
+  minutes = d.getMinutes();
+  seconds = d.getSeconds();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+  if (seconds.length < 2) seconds = "0" + seconds;
+
+  let res = [year, month, day].join("-");
+  let time = [hours, minutes, seconds].join(":");
+  return [res, time].join(", ");
+}
+
+document
+  .getElementById("submit-new-item")
+  .addEventListener("click", function () {
+    const input = document.getElementById("new-item-input");
+    const itemTitle = input.value;
+    if (itemTitle) {
+      addStorageItem(itemTitle);
+      updateTable();
+      input.value = "";
+    }
+  });
+
+document.getElementById("remove-item").addEventListener("click", function () {
+  const input = document.getElementById("remove-item-input");
+  const inputId = input.value;
+  if (inputId) {
+    removeStorageItem(inputId);
+    updateTable();
+    input.value = "";
+  }
+});
