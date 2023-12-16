@@ -1,5 +1,5 @@
 // Basic colors
-const WHITE = "bisque";
+const WHITE = "#FFFFFF";
 const BLACK = "#000000";
 
 // Basic dimensions
@@ -245,17 +245,15 @@ function removeStorageItem(itemIdToRemove) {
 
 function addStorageItem(itemTitle) {
   const newItem = { title: itemTitle };
-  let newId = Math.round(Math.random() * 1000000 - 1);
-  while (newId % 10 === 0) {
-    newId = Math.round(Math.random() * 1000000 - 1);
-  }
+  let newId = Math.floor(100000 + Math.random() * 900000);
 
-  newItem.id = newId;
+  newItem.id = `${newId}`;
   newItem.lastScanned = formatDate(Date.now());
   newItem.count = 0;
   const arr = getStorageArray();
   arr.push(newItem);
   setStorageArray(arr);
+  return newItem.id;
 }
 
 if (!getStorageArray()) setStorageArray(initialArray);
@@ -273,6 +271,10 @@ function updateTable() {
     const cell_1 = document.createElement("td");
     const id = document.createTextNode(`${storage[i].id}`);
     cell_1.appendChild(id);
+    cell_1.addEventListener("click", function () {
+      document.querySelector("#input").value = storage[i].id;
+      drawCode39(storage[i].id);
+    });
     row.appendChild(cell_1);
 
     const cell_2 = document.createElement("td");
@@ -299,12 +301,14 @@ function formatDate(date) {
   month = "" + (d.getMonth() + 1);
   day = "" + d.getDate();
   year = d.getFullYear();
-  hours = d.getHours();
-  minutes = d.getMinutes();
-  seconds = d.getSeconds();
+  hours = "" + d.getHours();
+  minutes = "" + d.getMinutes();
+  seconds = "" + d.getSeconds();
 
   if (month.length < 2) month = "0" + month;
   if (day.length < 2) day = "0" + day;
+  if (hours.length < 2) hours = "0" + hours;
+  if (minutes.length < 2) minutes = "0" + minutes;
   if (seconds.length < 2) seconds = "0" + seconds;
 
   let res = [year, month, day].join("-");
@@ -318,9 +322,11 @@ document
     const input = document.getElementById("new-item-input");
     const itemTitle = input.value;
     if (itemTitle) {
-      addStorageItem(itemTitle);
+      const newItemId = addStorageItem(itemTitle);
       updateTable();
       input.value = "";
+      document.querySelector("#input").value = newItemId;
+      drawCode39(newItemId);
     }
   });
 
